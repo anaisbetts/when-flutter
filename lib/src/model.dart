@@ -1,7 +1,6 @@
 import 'dart:async';
-
-import 'package:flutter/semantics.dart';
 import 'package:flutter/widgets.dart';
+
 import 'package:quiver/core.dart';
 import 'package:rxdart/rxdart.dart';
 
@@ -47,8 +46,9 @@ abstract class ViewModel {
     _changed.add(ChangeNotification(property, newValue, oldValue));
   }
 
-  void notifyAccessed(String property) {
+  T notifyAccessed<T>(String property, T value) {
     _accessed.add(property);
+    return value;
   }
 
   void dispose() {
@@ -69,11 +69,12 @@ abstract class ViewModelWidget<T extends ViewModel> extends StatefulWidget {
   void watch(dynamic value) {}
 
   @protected
-  Widget build(BuildContext context);
+  Widget build(BuildContext context, T model);
 }
 
 class _ViewModelWidgetState<T extends ViewModel>
     extends State<ViewModelWidget<T>> {
+  @protected
   T model;
   StreamSubscription _vmChanged;
 
@@ -91,7 +92,7 @@ class _ViewModelWidgetState<T extends ViewModel>
   @override
   Widget build(context) {
     if (_vmChanged != null) {
-      return widget.build(context);
+      return widget.build(context, model);
     }
 
     // ignore: prefer_collection_literals
@@ -100,7 +101,7 @@ class _ViewModelWidgetState<T extends ViewModel>
 
     Widget ret;
     try {
-      ret = widget.build(context);
+      ret = widget.build(context, model);
     } finally {
       sub.cancel();
     }
