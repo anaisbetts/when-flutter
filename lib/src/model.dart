@@ -3,6 +3,7 @@ import 'package:flutter/widgets.dart';
 
 import 'package:quiver/core.dart';
 import 'package:rxdart/rxdart.dart';
+import 'package:when_rx/src/bindable_state.dart';
 
 @immutable
 class ChangeNotification {
@@ -58,28 +59,40 @@ abstract class ViewModel {
 }
 
 typedef S ItemCreator<S>();
+typedef ModelSubscriber<T> = StreamSubscription<dynamic> Function(T);
 
+// ignore: must_be_immutable
 abstract class ViewModelWidget<T extends ViewModel> extends StatefulWidget {
   final ItemCreator<T> factory;
   ViewModelWidget(this.factory) : super();
 
+  List<ModelSubscriber<T>> binder;
+
   @override
-  _ViewModelWidgetState<T> createState() => _ViewModelWidgetState(factory);
+  _ViewModelWidgetState<T> createState() =>
+      _ViewModelWidgetState(factory, binder);
 
   void watch(dynamic value) {}
 
   @protected
   Widget build(BuildContext context, T model);
+
+  void setupBinds(List<ModelSubscriber<T>> bindFunc) => binder = bindFunc;
 }
 
 class _ViewModelWidgetState<T extends ViewModel>
-    extends State<ViewModelWidget<T>> {
+    extends BindableState<ViewModelWidget<T>> {
   @protected
   T model;
   StreamSubscription _vmChanged;
 
-  _ViewModelWidgetState(ItemCreator<T> factory) {
+  _ViewModelWidgetState(
+      ItemCreator<T> factory, List<ModelSubscriber<T>> binder) {
     model = factory();
+
+    if (binder != null) {
+      setupBinds(binder.map((b) => () => b(model)).toList());
+    }
   }
 
   @override
