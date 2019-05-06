@@ -1,9 +1,8 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:when_rx/src/bindable_state.dart';
 import 'package:when_rx/src/converters.dart';
-
-import 'package:when_rx/when_rx.dart';
 
 class SubjectWidget extends StatefulWidget {
   final ValueNotifier<int> listenable = ValueNotifier(0);
