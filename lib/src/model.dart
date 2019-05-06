@@ -61,12 +61,11 @@ abstract class ViewModel {
 typedef S ItemCreator<S>();
 typedef ModelSubscriber<T> = StreamSubscription<dynamic> Function(T);
 
-// ignore: must_be_immutable
 abstract class ViewModelWidget<T extends ViewModel> extends StatefulWidget {
   final ItemCreator<T> factory;
   ViewModelWidget(this.factory) : super();
 
-  List<ModelSubscriber<T>> binder;
+  final List<ModelSubscriber<T>> binder = [];
 
   @override
   _ViewModelWidgetState<T> createState() =>
@@ -77,7 +76,7 @@ abstract class ViewModelWidget<T extends ViewModel> extends StatefulWidget {
   @protected
   Widget build(BuildContext context, T model);
 
-  void setupBinds(List<ModelSubscriber<T>> bindFunc) => binder = bindFunc;
+  void setupBinds(List<ModelSubscriber<T>> bindFunc) => binder.addAll(bindFunc);
 }
 
 class _ViewModelWidgetState<T extends ViewModel>

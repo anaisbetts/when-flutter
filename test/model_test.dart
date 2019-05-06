@@ -11,7 +11,7 @@ class TestViewModelProps extends ViewModel {
 
 class TestViewModel extends TestViewModelProps with TestViewModelNotifyMixin {}
 
-// THIS IS WHAT WE WANT TO BOILERPLATE AWAY
+// THIS IS WHAT WE WANT TO CODEGEN AWAY
 mixin TestViewModelNotifyMixin on TestViewModelProps {
   String get someString => notifyAccessed('someString', _someString);
   set someString(String v) =>
@@ -20,7 +20,7 @@ mixin TestViewModelNotifyMixin on TestViewModelProps {
   set theTextBox(String v) =>
       notifyAndSet('theTextBox', _theTextBox, () => _theTextBox = v);
 }
-// END BOILERPLATE
+// END CODEGEN
 
 class TestWidget extends ViewModelWidget<TestViewModel> {
   final TextEditingController controller = TextEditingController();
