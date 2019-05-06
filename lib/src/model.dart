@@ -56,6 +56,16 @@ abstract class ViewModel {
     _changed.close();
     _accessed.close();
   }
+
+  Observable<ChangeNotification> when(List<String> props) {
+    if (props.length == 1) {
+      final item = props[0];
+      return changed.where((c) => c.property == item);
+    }
+
+    final itemSet = Set<String>.from(props);
+    return changed.where(itemSet.contains);
+  }
 }
 
 typedef S ItemCreator<S>();
