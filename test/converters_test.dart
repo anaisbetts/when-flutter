@@ -3,10 +3,7 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:rxdart/rxdart.dart';
 
 import 'package:when_rx/src/converters.dart';
-
-Future<void> makeRxDartWork() {
-  return Future<void>.delayed(Duration(milliseconds: 20));
-}
+import 'support.dart';
 
 void main() {
   test('toValueListenable should let you get the current value', () async {
